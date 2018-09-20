@@ -28,7 +28,12 @@ namespace SecureASPNetCoreAPIs
         public void ConfigureServices(IServiceCollection services)
         {
             services
-                .AddMvc()
+                .AddMvc(opt =>
+                {
+                    var jsonFormatter = opt.OutputFormatters.OfType<JsonOutputFormatter>().Single();
+                    opt.OutputFormatters.Remove(jsonFormatter);
+                    opt.OutputFormatters.Add(new IonOutputFormatter(jsonFormatter));
+                })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddRouting(opt => opt.LowercaseUrls = true);
