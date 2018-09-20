@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using SecureASPNetCoreAPIs.Filters;
 
 namespace SecureASPNetCoreAPIs
 {
@@ -30,6 +31,8 @@ namespace SecureASPNetCoreAPIs
             services
                 .AddMvc(opt =>
                 {
+                    opt.Filters.Add(typeof(JsonExceptionFilter));
+
                     var jsonFormatter = opt.OutputFormatters.OfType<JsonOutputFormatter>().Single();
                     opt.OutputFormatters.Remove(jsonFormatter);
                     opt.OutputFormatters.Add(new IonOutputFormatter(jsonFormatter));
