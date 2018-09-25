@@ -18,12 +18,21 @@ namespace SecureASPNetCoreAPIs
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public IConfiguration Configuration { get; }
+        public int? _httpsPort { get; set; }
+        public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
             Configuration = configuration;
+            if (env.IsDevelopment())
+            {
+                // Get the HTTPs port (only in development);
+                var launchJsConfig = new ConfigurationBuilder()
+                    .SetBasePath(env.ContentRootPath)
+                    .AddJsonFile("Properties//launchSettings.json")
+                    .Build();
+                _httpsPort = launchJsConfig.GetValue<int>("iisSettings:iisExpress:sslPort");
+            }
         }
-
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -32,6 +41,9 @@ namespace SecureASPNetCoreAPIs
                 .AddMvc(opt =>
                 {
                     opt.Filters.Add(typeof(JsonExceptionFilter));
+
+                    opt.SslPort = _httpsPort;
+                    opt.Filters.Add(typeof(RequireHttpsAttribute));
 
                     var jsonFormatter = opt.OutputFormatters.OfType<JsonOutputFormatter>().Single();
                     opt.OutputFormatters.Remove(jsonFormatter);
