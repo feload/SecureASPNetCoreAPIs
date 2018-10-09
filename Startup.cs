@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SecureASPNetCoreAPIs.Filters;
+using SecureASPNetCoreAPIs.Models;
 
 namespace SecureASPNetCoreAPIs
 {
@@ -52,6 +53,9 @@ namespace SecureASPNetCoreAPIs
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddRouting(opt => opt.LowercaseUrls = true);
+
+            // This line does two things: 1. It creates an instance out of the data it grabbed from appsettings file. 2. It wraps up this new instance in order to allow it to be injected in the controller.
+            services.Configure<HotelInfo>(Configuration.GetSection("Info"));
 
             services.AddApiVersioning(opt => {
                 opt.ApiVersionReader = new MediaTypeApiVersionReader();

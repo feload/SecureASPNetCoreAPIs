@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using SecureASPNetCoreAPIs.Models;
 
 namespace SecureASPNetCoreAPIs.Controllers
 {
@@ -10,7 +11,8 @@ namespace SecureASPNetCoreAPIs.Controllers
         public IActionResult GetRoot () {
             var response =  new {
                 href = Url.Link(nameof(GetRoot), null),
-                rooms = Url.Link(nameof(RoomsController.GetRooms), null)
+                rooms = Url.Link(nameof(RoomsController.GetRooms), null),
+                info = Url.Link(nameof(InfoController.GetInfo), null)
             };
 
             return Ok(response);
